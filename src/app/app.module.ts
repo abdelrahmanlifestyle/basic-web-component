@@ -1,16 +1,24 @@
-import { NgModule } from '@angular/core';
+import {ApplicationRef, DoBootstrap, Injector, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { AppComponent } from './app.component';
+import { SimpleTextComponent } from './simple-text/simple-text.component';
+import {createCustomElement} from "@angular/elements";
 
 @NgModule({
   declarations: [
-    AppComponent
+    SimpleTextComponent
   ],
   imports: [
     BrowserModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: []
 })
-export class AppModule { }
+export class AppModule implements DoBootstrap {
+  constructor(private injector: Injector) {
+  }
+
+  ngDoBootstrap(appRef: ApplicationRef) {
+    const el = createCustomElement(SimpleTextComponent, {injector: this.injector});
+    const pluginName = 'plugin-basic-text'
+    customElements.get(pluginName) || customElements.define(pluginName, el);
+  }
+}
